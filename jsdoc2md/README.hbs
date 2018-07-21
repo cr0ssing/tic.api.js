@@ -25,6 +25,7 @@ The option <code>--provider</code> must be set in all commands. It should be set
 ### Commands: 
 #### create    
 Creates a new TIC account by generating a profile and a contacts channel and saving its channel roots on the tangle.
+
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | seed | <code>string</code> |  | The seed of the TIC account to create. It's used to create the public master channel of the account where the channel roots of the profile and contacts channel are published. |
@@ -36,6 +37,7 @@ $ ticCli-linux-x86 create --seed=THISISTHESEEDOFTHETICACCOUNTANDISHOULDNOTGIVEIT
 ```
 #### read        
 Reads the content of a TIC account from the tangle.
+
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | seed | <code>string</code> |  | The seed of the TIC account |
@@ -43,6 +45,7 @@ Reads the content of a TIC account from the tangle.
 | profileRoot | <code>string</code> |  | The channel root of the profile channel to read |
 | contactsRoot | <code>string</code> |  | The channel root of the contacts channel to read |
 | password | <code>string</code> | seed | The tryte-encoded password to get the seeds of profile and contacts channel in the restricted channel of the TIC account. If password is not given the seed is used as a default. If null is given the seeds aren't retrieved. |
+
 One of these params is needed to read content from an account. The cli will look for them in descending order of the table. If profile and contacts root are given both channels are read.
 The password is only needed together with the seed.
 
@@ -53,12 +56,14 @@ $ ticCli-linux-x86 read --profileRoot=RGHGRDSIUHGRDOINGGSOLHKZHSÖFJBRHVUFCFYVNE
 ```
 #### putInfo     
 Adds the given information in JSON format to the profile of a TIC account.
+
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | seed | <code>string</code> | | The seed of the TIC account |
 | password | <code>string</code> | seed | The tryte-encoded password of the TIC account. It's used to retrieve the channel root from the restricted channel. If password is not given the seed is used as a default. If null is given the seed can't be retrieved. |
 | profileSeed | <code>string</code> | | The channel root of the profile channel to add information to |
 | content | <code>string</code> | | The information to add to the profile in form of key/value pairs formatted as a JSON object. '"' might be needed to escape and the content must be wraped in '' |
+
 Only seed or profile seed is needed for this request. Seed can only be used if channel seeds are saved on the tangle with the 
 given password.
 
@@ -70,12 +75,14 @@ $ ticCli-linux-x86 putInfo --seed=DSFEDHKSZAGFZUAIUAAWBSFVHJHTRNDBGZUFGJSDGIGDHJ
 ```
 #### removeInfo  
 Removes the properties as a JSON array from the profile of a TIC account.
+
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | seed | <code>string</code> | | The seed of the TIC account |
 | password | <code>string</code> | seed | The tryte-encoded password of the TIC account. It's used to retrieve the channel root from the restricted channel. If password is not given the seed is used as a default. If null is given the seed can't be retrieved. |
 | profileSeed | <code>string</code> | | The channel root of the profile channel to remove information from |
 | content | <code>string</code> | | The information to remove from the profile in form of the keys formatted as a JSON array. '"' might be needed to escape and the content must be wraped in '' |
+
 Only seed or profile seed is needed for this request. Seed can only be used if channel seeds are saved on the tangle with the 
 given password.
 Please note that the information is not really deleted from the tangle as that is not possible. The given information could be read on the mam channel as before by everyone. This request has the effect that the TIC library will not consider the given properties in information that has been published to this profile before, when compiling the profile information.
@@ -87,12 +94,14 @@ $ ticCli-linux-x86 removeInfo --profileSeed=THESEEDOFTHEPROFILECHANNELOFTHETICAC
 ```
 #### trust       
 Adds the given account to the trusted contacts of a TIC account.
+
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | seed | <code>string</code> | | The seed of the TIC account |
 | password | <code>string</code> | seed | The tryte-encoded password of the TIC account. It's used to retrieve the channel root from the restricted channel. If password is not given the seed is used as a default. If null is given the seed can't be retrieved. |
 | contactsSeed | <code>string</code> | | The channel root of the contacts channel to add trusts to |
 | content | <code>string</code> | | The master channel roots of the accounts to add to the trusted contacts formatted as a JSON array. '"' might be needed to escape and the content must be wraped in '' |
+
 Only seed or contacts seed is needed for this request. Seed can only be used if channel seeds are saved on the tangle with the 
 given password.
 
@@ -104,12 +113,14 @@ $ ticCli-linux-x86 trust --contactsSeed=THESEEDOFTHECONTACTSCHANNELOFTHETICACCOU
 ```
 #### distrust    
 Adds the given account to the distrusted contacts of a TIC account.
+
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | seed | <code>string</code> | | The seed of the TIC account |
 | password | <code>string</code> | seed | The tryte-encoded password of the TIC account. It's used to retrieve the channel root from the restricted channel. If password is not given the seed is used as a default. If null is given the seed can't be retrieved. |
 | contactsSeed | <code>string</code> | | The channel root of the contacts channel to add distrusts to |
 | content | <code>string</code> | | The master channel roots of the accounts to add to the distrusted contacts formatted as a JSON array. '"' might be needed to escape and the content must be wraped in '' |
+
 Only seed or contacts seed is needed for this request. Seed can only be used if channel seeds are saved on the tangle with the 
 given password.
 
@@ -122,12 +133,14 @@ $ ticCli-linux-x86 distrust --seed=EWIVBSDFIUGRUISAGAFKGRFZEAUKGFZERGFCFEUGICGFZ
 ```
 #### rating      
 Computes the trust rating for a given account by querying the contacts of a TIC account.
+
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | masterRoot | <code>string</code> |  | The root of the master channel of the TIC account to base the rating query on |
 | seed | <code>string</code> |  | The seed of the TIC account to base the rating query on |
 | target | <code>string</code> |  | The master channel root of the TIC account to compute a trust rating of |
 | depth | <code>number</code> | 5 | The maximum depth of recursive querying of contacts of contacts of contacts... |
+
 Only masterRoot or seed is needed for this request. The CLI will look for the master root first.
 
 **Example**  
