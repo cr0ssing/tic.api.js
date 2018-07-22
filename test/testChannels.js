@@ -48,31 +48,6 @@ describe("testing channels", () => {
         })
     })
 
-    /*describe("testing contacts with random mamClient", () => {
-        it("Read empty channel", async () => {
-            const client = await mamClient.createMam()
-            await assertContacts(client, [])
-        })
-
-        it("should read contacts from multiple messages", async () => {
-            const state = await mamClient.createMam()
-            await mamClient.publish(JSON.stringify({add: ["A", "B"]}), state.mam, state.iota)
-            await mamClient.publish(JSON.stringify({remove: ["B"]}), state.mam, state.iota)
-            await mamClient.publish(JSON.stringify({add: ["C"]}), state.mam, state.iota)
-
-            const client = await mamClient.createMam(state.mam.seed)
-            assertContacts(client, ["A", "C"])
-        })
-
-        it("should publish add and remove contacts and read channel", async () => {
-            const client = await mamClient.createMam()
-            await tic.contacts.add(client, ["A", "B"])
-            await tic.contacts.remove(client, "A")
-
-            await assertContacts(client, ["B"])
-        })
-    })*/
-
     describe("testing contacts with random mamClient", () => {
         it("Read empty channel", async () => {
             const client = await mamClient.createMam()
