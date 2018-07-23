@@ -26,15 +26,15 @@ if (process.env.PROVIDER) {
 
 describe("testing TIC api", () => {
     it("should create tic correcly", async () => {
-        const ticClient = await tic.create.from({})
-        const seed = ticClient.masterClient.mam.seed
-        const pw = ticClient.password
-        console.log("Created seed:", seed)
-        console.log("Password:", pw)
+        const ticClient = await tic.create.from()
+        const masterSeed = ticClient.masterClient.mam.seed
+        const password = ticClient.password
+        console.log("Created seed:", masterSeed)
+        console.log("Password:", password)
         const roots = Object.keys(ticClient.channelClients).map(c => ticClient.channelClients[c].channelRoot)
         const seeds = Object.keys(ticClient.channelClients).map(c => ticClient.channelClients[c].mam.seed)
 
-        let { mam: client, channelRoot } = await mamClient.createMam(seed)
+        let { mam: client, channelRoot } = await mamClient.createMam(masterSeed)
         console.log("Public channel root:", channelRoot)
         expect(channelRoot).to.equal(ticClient.masterClient.channelRoot)
 
@@ -42,16 +42,16 @@ describe("testing TIC api", () => {
         console.log("Roots:", messages.messages)
         expect(messages.messages).to.deep.equal(roots)
 
-        const resp = await mamClient.changeMode(client, 'restricted', pw)
+        const resp = await mamClient.changeMode(client, 'restricted', password)
         client = resp.mam
         channelRoot = resp.channelRoot
         messages = await mamClient.getChannelMessages(channelRoot, client)
         console.log("Seeds:", messages.messages)
         expect(messages.messages).to.deep.equal(seeds)
 
-        const state = await tic.init.fromMasterSeed(seed, pw)
+        const state = await tic.init.fromMasterSeed({masterSeed, password})
         console.log("Master-seed:", state.masterClient.mam.seed)
-        expect(state.masterClient.mam.seed).to.equal(seed)
+        expect(state.masterClient.mam.seed).to.equal(masterSeed)
         Object.keys(state.channelClients)
             .forEach(client => {
                 const { mam, channelRoot } = state.channelClients[client]
@@ -65,7 +65,7 @@ describe("testing TIC api", () => {
         const result = []
         for (var i = 0; i < amount; i++) {
             console.log(`Creating tic account ${i}...`)
-            result[i] = saveSeeds ? await tic.create.from({}) : await tic.create.from({password: null})
+            result[i] = saveSeeds ? await tic.create.from() : await tic.create.from({password: null})
         }
         return result
     };
