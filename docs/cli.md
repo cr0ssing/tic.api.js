@@ -1,12 +1,4 @@
-# TIC - Trusted IOTA Contacts
-A simple library providing a secure way to validate identities in the IOTA network.
-
-With TIC you can publish information which you want to share about yourself on the tangle and publish that you trust or
-distrust the information of someone else. The ones you trust are your 'contacts'. With this a Web of Trust is established 
-by which you can validate the information of someone by accumulating the trust ratings of your contacts and their contacts 
-and so on. This makes it possible to derive a trust rating for someone who is not your direct contact.
-
-## CLI
+# CLI
 You can use all functions of the TIC library with a simple CLI. The releases contain binaries for different platforms with
 that you can use TIC standalone from the command line:
 ```sh
@@ -19,11 +11,21 @@ $ npm run cli <command> -- [options]
 ```
 Note the extra '--' needed before the options.
 
-### Setting Node
+## Setting Node
 The option <code>--provider</code> must be set in all commands. It should be set to the URL of an IOTA full node supporting POW.
 
-### Commands: 
-#### create    
+* Commands:
+    * [create](#create)
+    * [read](#read)
+    * [putInfo](#putinfo)
+    * [removeInfo](#removeinfo)
+    * [trust](#trust)
+    * [distrust](#distrust)
+    * [rating](#rating)
+
+<a name="#create"></a>
+
+### create    
 Creates a new TIC account by generating a profile and a contacts channel and saving its channel roots on the tangle.
 
 | Param | Type | Default | Description |
@@ -35,7 +37,10 @@ Creates a new TIC account by generating a profile and a contacts channel and sav
 ```sh
 $ ticCli-linux-x86 create --seed=THISISTHESEEDOFTHETICACCOUNTANDISHOULDNOTGIVEITTOANYBODYELSE --provider=https://your.favorite.node
 ```
-#### read        
+
+<a name="#read"></a>
+
+### read        
 Reads the content of a TIC account from the tangle.
 
 | Param | Type | Default | Description |
@@ -54,7 +59,10 @@ The password is only needed together with the seed.
 $ ticCli-linux-x86 read --profileRoot=RGHGRDSIUHGRDOINGGSOLHKZHSÖFJBRHVUFCFYVNEJKXDSHJGFSDSDF
     --contactsRoot=LOIRHGBVSHJRHGREIUAOCNAKSSUEGRFSJHFSDGFDJHFSFKBGHGTZUCNYS --provider=https://your.favorite.node
 ```
-#### putInfo     
+
+<a name="#putinfo"></a>
+
+### putInfo     
 Adds the given information in JSON format to the profile of a TIC account.
 
 | Param | Type | Default | Description |
@@ -73,7 +81,10 @@ $ ticCli-linux-x86 putInfo --seed=DSFEDHKSZAGFZUAIUAAWBSFVHJHTRNDBGZUFGJSDGIGDHJ
     --password=IUDRHVBVSSHGDGFKSIDFHGVHDZDUSGHDFVBSJKDFUCBHDSJ
     --content='{\"name\":\"Max Mustermann\"}' --provider=https://your.favorite.node
 ```
-#### removeInfo  
+
+<a name="#removeinfo"></a>
+
+### removeInfo  
 Removes the properties as a JSON array from the profile of a TIC account.
 
 | Param | Type | Default | Description |
@@ -92,7 +103,10 @@ Please note that the information is not really deleted from the tangle as that i
 $ ticCli-linux-x86 removeInfo --profileSeed=THESEEDOFTHEPROFILECHANNELOFTHETICACCOUNTWHICHNEEDSTOBEKEPTPRIVATE
     --content='[\"name\"]' --provider=https://your.favorite.node
 ```
-#### trust       
+
+<a name="#trust"></a>
+
+### trust       
 Adds the given account to the trusted contacts of a TIC account.
 
 | Param | Type | Default | Description |
@@ -111,7 +125,10 @@ $ ticCli-linux-x86 trust --contactsSeed=THESEEDOFTHECONTACTSCHANNELOFTHETICACCOU
     --content='[\"GOEFGIEUVHFJHVDFBDHGZGFZIGXGFCDJDKSFIWFUZFIOTHGRTSIUDG\",\"UZOITRZEHSVCXKGHGEUZSVBSZGFSUZGFSZUDGFSDFSGDSHJDSDFHSDFHJDGFSDHJGFD\"]' 
     --provider=https://your.favorite.node
 ```
-#### distrust    
+
+<a name="#distrust"></a>
+
+### distrust    
 Adds the given account to the distrusted contacts of a TIC account.
 
 | Param | Type | Default | Description |
@@ -131,7 +148,10 @@ $ ticCli-linux-x86 distrust --seed=EWIVBSDFIUGRUISAGAFKGRFZEAUKGFZERGFCFEUGICGFZ
     --content='[\"GOEFGIEUVHFJHVDFBDHGZGFZIGXGFCDJDKSFIWFUZFIOTHGRTSIUDG\",\"UZOITRZEHSVCXKGHGEUZSVBSZGFSUZGFSZUDGFSDFSGDSHJDSDFHSDFHJDGFSDHJGFD\"]' 
     --provider=https://your.favorite.node
 ```
-#### rating      
+
+<a name="#rating"></a>
+
+### rating      
 Computes the trust rating for a given account by querying the contacts of a TIC account.
 
 | Param | Type | Default | Description |
@@ -172,21 +192,7 @@ of an account that this account trusts.
 
 If a contact has the target in its contacts, trusting or distrusting, the target is shown
 as a contact of this account in this tree. The target has an undefined rating because ratings for someones own account are not considered.
-* * *
-## API Reference
-{{#module name="ticApi"}}
-{{>body~}}
-{{>member-index~}}
-{{>members~}}
-{{/module}}
-* * *
-## Types
-{{#module name="types"}}
-{{>body~}}
-{{>member-index~}}
-{{>members~}}
-{{/module}}
 
-* * *
+* * * 
 
 &copy; 2018 Robin Lamberti \<lamberti.robin@gmail.com\>. Documented by [jsdoc-to-markdown](https://github.com/jsdoc2md/jsdoc-to-markdown).

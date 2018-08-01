@@ -30,9 +30,8 @@
     "test": "cross-env DEBUG=mam,tic mocha",
     "system-test": "cross-env DEBUG=mam,tic UNMOCK=true mocha --timeout=999999 --grep=\"should compute the score derived from multiple TIC profiles without saved seeds\" test/testTic.js",
     "build-native": "pkg --out-path bin -t linux-x86,macos-x86,win-x86,linux-x64,macos-x64,win-x64 lib/ticCli.js",
-    "readme": "jsdoc2md -t jsdoc2md/README.hbs lib/types.js lib/ticApi.js > README.md",
-    "markdown": "jsdoc2md lib/types.js lib/ticApi.js > api.md",
-    "docs": "jsdoc lib/types.js lib/ticApi.js",
+    "docs": "jsdoc2md -t jsdoc2md/api.hbs lib/types.js lib/ticApi.js > docs/api.md",
+    "docs-html": "jsdoc lib/types.js lib/ticApi.js",
     "cli-debug": "cross-env DEBUG=mam,tic node lib/ticCli.js",
     "cli": "node lib/ticCli.js",
     "web": "browserify lib/ticApi.js > ticApi.web.js"
