@@ -34,7 +34,8 @@
     "docs-html": "jsdoc lib/types.js lib/ticApi.js",
     "cli-debug": "cross-env DEBUG=mam,tic node lib/ticCli.js",
     "cli": "node lib/ticCli.js",
-    "web": "browserify lib/ticApi.js > ticApi.web.js"
+    "web": "browserify lib/ticApi.js --standalone tic > dist/tic.web.js",
+    "serve": "serve examples/web"
   },
   "dependencies": {
     "extend": "^3.0.1",
@@ -42,12 +43,14 @@
   },
   "devDependencies": {
     "browserify": "^16.2.2",
-    "pkg": "4.3.1",
     "chai": "^4.1.2",
     "cross-env": "^5.2.0",
+    "express": "^4.16.3",
     "jsdoc": "^3.5.5",
     "jsdoc-to-markdown": "^4.0.1",
     "mocha": "^5.2.0",
-    "rewire": "^4.0.1"
+    "pkg": "4.3.1",
+    "rewire": "^4.0.1",
+    "serve": "^9.4.0"
   }
 }

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+        <link rel="stylesheet" href="jquery.json-viewer.css">
+
+        <style>
+            body {
+                padding-bottom: 2rem;
+            }
+
+            h1 {
+                margin-top: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            form {
+                margin-bottom: 2rem;
+            }
+
+            .master-root {
+                margin-bottom: 1rem;
+                align-items: center;
+            }
+
+            .root {
+                margin-right: .5rem;
+            }
+
+            .tabs {
+                display: flex;
+                width: 100%;
+            }
+
+            #content {
+                display: none;
+                justify-content: center;
+            }
+
+            .channel-root {
+                display: none;
+                margin-bottom: 1rem;
+            }
+
+            .content-col {
+                margin-left: .5rem;
+                margin-right: .5rem;
+            }
+
+            .col-head {
+                margin-bottom: 1rem;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            #contacts {
+                margin-bottom: 1rem;
+            }
+
+            #overlay {
+                display: none;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(100, 100, 100, 0.2);
+                z-index: 10;
+                top: 0; 
+                left: 0; 
+                position: fixed; 
+            }
+
+            .spinner {
+                border: 16px solid #f3f3f3; /* Light grey */
+                border-top: 16px solid #3498db; /* Blue */
+                border-radius: 50%;
+                width: 5rem;
+                height: 5rem;
+                animation: spin 2s linear infinite;
+                top: 50%;
+                left: 50%;
+                position: fixed;
+            }
+
+            @keyframes spin {
+                0% { transform: translate(-50%, -50%) rotate(0deg);  }
+                100% { transform: translate(-50%, -50%) rotate(360deg); }
+            }
+        </style>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+        <script src="tic.web.js"></script>
+        <script src="jquery.json-editor.min.js"></script>
+    </head>
+    <body>
+        <div id="overlay">
+            <div class="spinner"></div>
+        </div>
+        <div class="container">
+
+            <h1>Trusted IOTA Contacts</h1>
+
+            <form id="form">
+                <div class="form-group row">
+                    <label for="provider" class="col-sm-2 col-form-label">Provider URL</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="provider" id="provider">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="seed" class="col-sm-2 col-form-label">Seed</label> 
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="seed" id="seed">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="password" class="col-sm-2 col-form-label">Password</label> 
+                    <div class="col-sm-9">
+                        <input type="password" class="form-control" name="password" id="password">
+                    </div>
+                </div>
+                <button type="submit" name="login" class="btn btn-primary">Read</button>
+                <button type="submit" name="create" class="btn">Create</button>    
+            </form>
+
+            <div class="row" id="content">
+                <div class="row master-root">
+                    <div id="master-root" class="root"></div>
+                    <button id="copyMasterRoot" class="btn btn-sm"><i class="fas fa-save"></i></button>
+                </div>
+                <div class="row tabs">
+                    <div class="col content-col">
+                        <div class="row col-head">
+                            <h3 class="col-title">Profile</h3>
+                            <div>
+                                <button id="copyProfile" class="btn contentButton"><i class="fas fa-save"></i></button>
+                                <button id="updateProfile" class="btn contentButton"><i class="fas fa-sync"></i></button>
+                                <button id="addInfo" class="btn content-button"><i class="fas fa-plus"></i></button>
+                                <button id="removeInfo" class="btn content-button"><i class="fas fa-minus"></i></button>
+                            </div>
+                        </div>
+                        <div id="profile-root" class="row channel-root"></div>
+                        <pre id="profile-json" class="row"></pre>
+                    </div>
+                    <div class="col content-col">
+                        <div class="row col-head">
+                            <h3 class="col-title">Contacts</h3>
+                            <div>
+                                <button id="copyContacts" class="btn contentButton"><i class="fas fa-save"></i></button>
+                                <button id="updateContacts" class="btn contentButton"><i class="fas fa-sync"></i></button>
+                                <button id="addContact" class="btn content-button"><i class="fas fa-plus"></i></button>
+                                <button id="removeContact" class="btn content-button"><i class="fas fa-minus"></i></button>
+                            </div>
+                        </div>
+                        <div id="contacts-root" class="row channel-root"></div>
+                        <pre id="contacts" class="row list-group"></pre>
+                        <button id="rating" type="button" class="btn">Get Rating</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    
+</html>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.4.4/babel.min.js"></script>
+<script type="text/javascript">
+    new ClipboardJS('.btn');
+
+    const val = name => ($(`#form input[name=${name}]`).val())
+    const inputs = () => {
+        const password = val('password')
+        return {
+            provider: val('provider'),
+            seed: val('seed'),
+            password: password.length == 0 ? null : password
+        }
+    }
+
+    const wait = async action => {
+        $("#overlay").show()
+        await action()
+        $("#overlay").hide()
+    }
+
+    $('#form button[name=create]').click(async event => {
+        unfocus()
+        event.preventDefault()
+
+        await wait(async () => {
+            let {provider, seed, password} = inputs()
+            if (seed.length == 0) {
+                seed = tic.mamClient.generateSeed()
+                $(`#form input[name=seed]`).val(seed)
+            }
+
+            tic.mamClient.setProvider(provider)
+            const iota = tic.mamClient.getIota()
+            client = await tic.create.from({seed, password, iota})
+
+            await showContent()
+        })
+    })
+
+    let client = {}
+
+    const unfocus = () => {
+        ["provider", "seed", "password"].forEach(e => $(`#form input[name=${e}]`).blur())
+    }
+
+    let selected = ""
+
+    $("#rating").click(async event => {
+        let rating = {}
+        await wait(async () => {
+            result = await tic.rating.fromMasterChannelRoot(client.masterRoot, selected, client.masterClient.iota)
+            rating = result.rating.flat
+        })
+        alert(`Trust: ${rating.trust}\nDistrust: ${rating.distrust}\nUnknown: ${rating.unknown}`)
+    })
+
+    $('#form button[name=login]').click(async event => {
+        unfocus()
+        event.preventDefault()
+
+        await wait(async () => {
+            const {provider, seed, password} = inputs()
+
+            tic.mamClient.setProvider(provider)
+            const iota = tic.mamClient.getIota()
+            client = await tic.init.fromMasterSeed({
+                masterSeed: seed, 
+                password, 
+                iota
+            })
+            await showContent()
+        })
+    })
+
+    async function showProfile(profileRoot, iota) {
+        const profile = await tic.profile.get(profileRoot, iota)
+        $("#profile-root").html(`<small>${profileRoot}</small>`)
+        $("#copyProfile").attr("data-clipboard-text", profileRoot)
+        $('#profile-json').jsonViewer(profile)
+    }
+
+    async function showContacts(contactsRoot, iota) {
+        const contacts = await tic.contacts.get(contactsRoot, iota)
+        const name = c => (Object.keys(c)[0])
+
+        $("#contacts-root").html(`<small>${contactsRoot}</small>`)
+        $("#copyContacts").attr("data-clipboard-text", contactsRoot)
+        $("#contacts").empty()
+        contacts.sort((a, b) => {
+            if (name(a) > name(b)) {
+                return 1
+            }
+            if (name(a) < name(b)) {
+                return -1
+            }
+            return 0
+        }).reverse().forEach(c => {
+            const contact = name(c)
+            const rating = c[contact]
+            const clazz = rating == 'trust' ? 'list-group-item-success' : 'list-group-item-danger'
+            $("#contacts").append(`<button id="${contact}" type="button" class="list-group-item 
+            list-group-item-action ${clazz}">${contact}</li>`)
+            $(`#${contact}`).click(async event => {
+                selected = contact
+                $("#contacts").children().removeClass("active")
+                $(`#${contact}`).addClass("active")
+            })
+        })
+    }
+
+    async function showContent() {
+        $('#content').css("display", "flex")
+        const {profile: {channelRoot: profileRoot}, contacts: {channelRoot: contactsRoot}, masterClient: {iota}} = client
+        $("#master-root").html("Master Root: " + client.masterRoot)
+        $("#copyMasterRoot").attr("data-clipboard-text", client.masterRoot)
+        await showProfile(profileRoot, iota)
+        await showContacts(contactsRoot, iota) 
+    }
+
+    $('#updateProfile').click(async event => {
+        await wait(async () => {
+            await showProfile(client.profile.channelRoot, client.masterClient.iota)
+        })
+    })
+
+    $('#updateContacts').click(async event => {
+        await wait(async () => {
+            await showContacts(client.contacts.channelRoot, client.masterClient.iota)
+        })
+    })
+
+    $('#addInfo').click(async event => {
+        $(`#addInfo`).blur()
+        const info = prompt("Add Profile Info as JSON", "{}")
+        await wait(async () => {
+            if (info) {
+                await tic.profile.putInfo(client.profile, JSON.parse(info))
+                await showProfile(client.profile.channelRoot, client.masterClient.iota)
+            }
+        })
+    })
+
+    $('#removeInfo').click(async event => {
+        $(`#removeInfo`).blur()
+        const info = prompt("Add properties to remove as JSON", "[]")
+        await wait(async () => {
+            if (info) {
+                await tic.profile.removeInfo(client.profile, JSON.parse(info))
+                await showProfile(client.profile.channelRoot, client.masterClient.iota)
+            }
+        })
+    })
+
+    $('#addContact').click(async event => {
+        $(`#addContact`).blur()
+        const info = prompt("Add masterRoot of contact to trust as JSON", "[]")
+        await wait(async () => {
+            if (info) {
+                await tic.contacts.trust(client.contacts, JSON.parse(info))
+                await showContacts(client.contacts.channelRoot, client.masterClient.iota)
+            }
+        })
+    })
+
+    $('#removeContact').click(async event => {
+        $(`#removeContact`).blur()
+        const info = prompt("Add masterRoot of contact to distrust as JSON", "[]")
+        await wait(async () => {
+            if (info) {
+                await tic.contacts.distrust(client.contacts, JSON.parse(info))
+                await showContacts(client.contacts.channelRoot, client.masterClient.iota)
+            }
+        })
+    })
+</script>

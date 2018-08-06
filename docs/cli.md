@@ -195,4 +195,4 @@ as a contact of this account in this tree. The target has an undefined rating be
 
 * * * 
 
-&copy; 2018 Robin Lamberti \<lamberti.robin@gmail.com\>. Documented by [jsdoc-to-markdown](https://github.com/jsdoc2md/jsdoc-to-markdown).
+&copy; 2018 Robin Lamberti \<lamberti.robin@gmail.com\>.

@@ -57,4 +57,4 @@ When you query the trust rating of a TIC account from your own TIC Account, all 
 
 * * *
 
-&copy; 2018 Robin Lamberti \<lamberti.robin@gmail.com\>. Documented by [jsdoc-to-markdown](https://github.com/jsdoc2md/jsdoc-to-markdown).
+&copy; 2018 Robin Lamberti \<lamberti.robin@gmail.com\>.
