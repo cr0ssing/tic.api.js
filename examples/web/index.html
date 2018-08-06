@@ -185,7 +185,11 @@
 
     const wait = async action => {
         $("#overlay").show()
-        await action()
+        try {
+            await action()
+        }catch(err) {
+            alert(err)
+        }
         $("#overlay").hide()
     }
 
@@ -269,12 +273,12 @@
             const contact = name(c)
             const rating = c[contact]
             const clazz = rating == 'trust' ? 'list-group-item-success' : 'list-group-item-danger'
-            $("#contacts").append(`<button id="${contact}" type="button" class="list-group-item 
+            $("#contacts").append(`<button id="c-${contact}" type="button" class="list-group-item 
             list-group-item-action ${clazz}">${contact}</li>`)
-            $(`#${contact}`).click(async event => {
+            $(`#c-${contact}`).click(async event => {
                 selected = contact
                 $("#contacts").children().removeClass("active")
-                $(`#${contact}`).addClass("active")
+                $(`#c-${contact}`).addClass("active")
             })
         })
     }
@@ -311,36 +315,66 @@
         })
     })
 
+    function checkArray(info) {
+        try {
+            const obj = JSON.parse(info)
+            if (obj instanceof Array) {
+                for (e in obj) {
+                    if (!(typeof(e) === 'string' || e instanceof String)) {
+                        return false;
+                    }
+                }
+                return true
+            } else {
+                return false
+            }
+        } catch(err) {
+            return false
+        }
+    }
+
     $('#removeInfo').click(async event => {
         $(`#removeInfo`).blur()
         const info = prompt("Add properties to remove as JSON", "[]")
-        await wait(async () => {
-            if (info) {
-                await tic.profile.removeInfo(client.profile, JSON.parse(info))
-                await showProfile(client.profile.channelRoot, client.masterClient.iota)
+        if (info) {
+            if (checkArray(info)) {
+                await wait(async () => {
+                    await tic.profile.removeInfo(client.profile, JSON.parse(info))
+                    await showProfile(client.profile.channelRoot, client.masterClient.iota)
+                })
+            } else {
+                alert("Please provide correcly formatted JSON.")
             }
-        })
+        }
     })
 
     $('#addContact').click(async event => {
         $(`#addContact`).blur()
         const info = prompt("Add masterRoot of contact to trust as JSON", "[]")
-        await wait(async () => {
-            if (info) {
-                await tic.contacts.trust(client.contacts, JSON.parse(info))
-                await showContacts(client.contacts.channelRoot, client.masterClient.iota)
+        if (info) {
+            if (checkArray(info)) {
+                await wait(async () => {
+                    await tic.contacts.trust(client.contacts, JSON.parse(info))
+                    await showContacts(client.contacts.channelRoot, client.masterClient.iota)
+                })
+            } else {
+                alert("Please provide correcly formatted JSON.")
             }
-        })
+        }
     })
 
     $('#removeContact').click(async event => {
         $(`#removeContact`).blur()
         const info = prompt("Add masterRoot of contact to distrust as JSON", "[]")
-        await wait(async () => {
-            if (info) {
-                await tic.contacts.distrust(client.contacts, JSON.parse(info))
-                await showContacts(client.contacts.channelRoot, client.masterClient.iota)
+        if (info) {
+            if (checkArray(info)) {
+                await wait(async () => {
+                    await tic.contacts.distrust(client.contacts, JSON.parse(info))
+                    await showContacts(client.contacts.channelRoot, client.masterClient.iota)
+                })
+            } else {
+                alert("Please provide correcly formatted JSON.")
             }
-        })
+        }
     })
 </script>
