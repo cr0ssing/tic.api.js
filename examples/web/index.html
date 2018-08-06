@@ -61,6 +61,10 @@
                 margin-bottom: 1rem;
             }
 
+            .contacts-buttons {
+                margin-bottom: 1rem;
+            }
+
             #overlay {
                 display: none;
                 width: 100%;
@@ -159,7 +163,11 @@
                         </div>
                         <div id="contacts-root" class="row channel-root"></div>
                         <pre id="contacts" class="row list-group"></pre>
-                        <button id="rating" type="button" class="btn">Get Rating</button>
+                        <div class="row contacts-buttons">
+                            <button id="rating" type="button" class="btn content-col">Get Rating</button>
+                            <button id="getContactProfile" type="button" class="btn">Get Profile Info</button>
+                        </div>
+                        <pre id="contacts-json" class="row"></pre>
                     </div>
                 </div>
             </div>
@@ -221,12 +229,26 @@
     let selected = ""
 
     $("#rating").click(async event => {
-        let rating = {}
-        await wait(async () => {
-            result = await tic.rating.fromMasterChannelRoot(client.masterRoot, selected, client.masterClient.iota)
-            rating = result.rating.flat
-        })
-        alert(`Trust: ${rating.trust}\nDistrust: ${rating.distrust}\nUnknown: ${rating.unknown}`)
+        if (selected.length > 0) {
+            let rating = {}
+            await wait(async () => {
+                const result = await tic.rating.fromMasterChannelRoot(client.masterRoot, selected, client.masterClient.iota)
+                rating = result.rating.flat
+            })
+            alert(`Trust: ${rating.trust}\nDistrust: ${rating.distrust}\nUnknown: ${rating.unknown}`)
+        }
+    })
+
+    $("#getContactProfile").click(async event => {
+        if (selected.length > 0) {
+            await wait(async () => {
+                const channels = await tic.getChannelRoots(selected)
+                if (channels.profile) {
+                    const profile = await tic.profile.get(channels.profile, client.masterClient.iota)
+                    $('#contacts-json').jsonViewer(profile)
+                }
+            })
+        }
     })
 
     $('#form button[name=login]').click(async event => {
