@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/4.1.3/css/bootstrap-combined.min.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
         <link rel="stylesheet" href="jquery.json-viewer.css">
 
@@ -13,9 +14,15 @@
                 padding-bottom: 2rem;
             }
 
+            .head {
+                display: flex;
+                justify-content: center;
+            }
+
             h1 {
                 margin-top: 2rem;
                 margin-bottom: 2rem;
+                text-align: center;
             }
 
             form {
@@ -98,6 +105,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.js"></script>
         <script src="tic.web.js"></script>
         <script src="jquery.json-editor.min.js"></script>
     </head>
@@ -106,46 +114,65 @@
             <div class="spinner"></div>
         </div>
         <div class="container">
-
             <h1>Trusted IOTA Contacts</h1>
+
+            <div class="head row">
+                <div class="card text-white bg-danger mb-3" style="width: 60%;">
+                    <div class="card-header">Important!</div>
+                    <dic class="card-body">
+                        <p>Please don't use seeds with any amount of IOTA on it. You may use all your money.</p>
+                        <p>This example is not ready for production use. </p>
+                        <p>Only use seeds and passwords with a sufficient length (e.g. 81 characters). 
+                            Never give your seed and password to anybody else.</p>
+                    </dic>
+                </div>
+            </div>
 
             <form id="form">
                 <div class="form-group row">
                     <label for="provider" class="col-sm-2 col-form-label">Provider URL</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" name="provider" id="provider">
+                        <input type="text" class="form-control" name="provider" id="provider" placeholder="URL to IOTA fullnode"
+                        data-toggle="tooltip" data-placement="bottom" title="The URL of the IOTA full node with POW to use">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="seed" class="col-sm-2 col-form-label">Seed</label> 
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" name="seed" id="seed">
+                        <input type="text" class="form-control" name="seed" id="seed" placeholder="Your account seed">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="password" class="col-sm-2 col-form-label">Password</label> 
                     <div class="col-sm-9">
-                        <input type="password" class="form-control" name="password" id="password">
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Your account password">
                     </div>
                 </div>
-                <button type="submit" name="login" class="btn btn-primary">Read</button>
-                <button type="submit" name="create" class="btn">Create</button>    
+                <button type="submit" name="login" class="btn btn-primary"
+                data-toggle="tooltip" data-placement="bottom" title="Read the content of the TIC account">Read</button>
+                <button type="submit" name="create" class="btn"
+                data-toggle="tooltip" data-placement="bottom" title="Create a new TIC account">Create</button>    
             </form>
 
             <div class="row" id="content">
                 <div class="row master-root">
                     <div id="master-root" class="root"></div>
-                    <button id="copyMasterRoot" class="btn btn-sm"><i class="fas fa-save"></i></button>
+                    <button id="copyMasterRoot" class="btn btn-sm"
+                    data-toggle="tooltip" data-placement="bottom" title="Save the root of the master channel to clipboard"><i class="fas fa-save"></i></button>
                 </div>
                 <div class="row tabs">
                     <div class="col content-col">
                         <div class="row col-head">
                             <h3 class="col-title">Profile</h3>
                             <div>
-                                <button id="copyProfile" class="btn contentButton"><i class="fas fa-save"></i></button>
-                                <button id="updateProfile" class="btn contentButton"><i class="fas fa-sync"></i></button>
-                                <button id="addInfo" class="btn content-button"><i class="fas fa-plus"></i></button>
-                                <button id="removeInfo" class="btn content-button"><i class="fas fa-minus"></i></button>
+                                <button id="copyProfile" class="btn contentButton"
+                                data-toggle="tooltip" data-placement="bottom" title="Save the root of the profile channel to clipboard"><i class="fas fa-save"></i></button>
+                                <button id="updateProfile" class="btn contentButton"
+                                data-toggle="tooltip" data-placement="bottom" title="Reload the content of the profile"><i class="fas fa-sync"></i></button>
+                                <button id="addInfo" class="btn content-button"
+                                data-toggle="tooltip" data-placement="bottom" title="Add information to the profile"><i class="fas fa-plus"></i></button>
+                                <button id="removeInfo" class="btn content-button"
+                                data-toggle="tooltip" data-placement="bottom" title="Remove information from the profile"><i class="fas fa-minus"></i></button>
                             </div>
                         </div>
                         <div id="profile-root" class="row channel-root"></div>
@@ -155,10 +182,14 @@
                         <div class="row col-head">
                             <h3 class="col-title">Contacts</h3>
                             <div>
-                                <button id="copyContacts" class="btn contentButton"><i class="fas fa-save"></i></button>
-                                <button id="updateContacts" class="btn contentButton"><i class="fas fa-sync"></i></button>
-                                <button id="addContact" class="btn content-button"><i class="fas fa-plus"></i></button>
-                                <button id="removeContact" class="btn content-button"><i class="fas fa-minus"></i></button>
+                                <button id="copyContacts" class="btn contentButton"
+                                data-toggle="tooltip" data-placement="bottom" title="Save the root of the contacts channel to clipboard"><i class="fas fa-save"></i></button>
+                                <button id="updateContacts" class="btn contentButton"
+                                data-toggle="tooltip" data-placement="bottom" title="Reload the contacts of the account"><i class="fas fa-sync"></i></button>
+                                <button id="addContact" class="btn content-button"
+                                data-toggle="tooltip" data-placement="bottom" title="Add a contact to trust"><i class="fas fa-plus"></i></button>
+                                <button id="removeContact" class="btn content-button"
+                                data-toggle="tooltip" data-placement="bottom" title="Add a contact to distrust"><i class="fas fa-minus"></i></button>
                             </div>
                         </div>
                         <div id="contacts-root" class="row channel-root"></div>
@@ -180,6 +211,50 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.4.4/babel.min.js"></script>
 <script type="text/javascript">
     new ClipboardJS('.btn');
+    $('[data-toggle="tooltip"]').tooltip()
+
+    $.validator.methods.trytes = function( value, element ) {
+        return this.optional(element) || /^([A-Z]|9)+$/.test(value);
+    }
+
+	$( document ).ready( function () {
+        $("#form").validate({
+            rules: {
+                provider: {
+                    required: true,
+                    url: true
+                },
+                seed: {
+                    trytes: true,
+                    required: true
+                },
+                password: {
+                    trytes: true,
+                    required: true
+                }
+            },
+            messages: {
+                seed: {
+                    trytes: "The seed has to be in trytes format"
+                },
+                password: {
+                    trytes: "The password has to be in trytes format"
+                }
+            },
+            highlight: function(element) {
+                $(element).removeClass('is-valid').addClass('is-invalid')
+            },
+            unhighlight: function(element) {
+                $(element).addClass('is-valid').removeClass('is-invalid')
+            }
+        })
+
+        $("#form").validate().form()
+    })
+
+    $(`#form input[name=seed]`).blur(event => {
+        $("#form").validate().form()
+    })
 
     const val = name => ($(`#form input[name=${name}]`).val())
     const inputs = () => {
@@ -202,22 +277,25 @@
     }
 
     $('#form button[name=create]').click(async event => {
-        unfocus()
         event.preventDefault()
+        let {provider, seed, password} = inputs()
+        if (seed.length == 0) {
+            seed = tic.mamClient.generateSeed()
+            $(`#form input[name=seed]`).val(seed)
+            $("#form").validate().form()
+        }
+        if ($("#form").validate().valid()) {
+            unfocus()
+            $('#form button[name=create]').blur()
+            
+            await wait(async () => {
+                tic.mamClient.setProvider(provider)
+                const iota = tic.mamClient.getIota()
+                client = await tic.create.from({seed, password, iota})
 
-        await wait(async () => {
-            let {provider, seed, password} = inputs()
-            if (seed.length == 0) {
-                seed = tic.mamClient.generateSeed()
-                $(`#form input[name=seed]`).val(seed)
-            }
-
-            tic.mamClient.setProvider(provider)
-            const iota = tic.mamClient.getIota()
-            client = await tic.create.from({seed, password, iota})
-
-            await showContent()
-        })
+                await showContent()
+            })
+        }
     })
 
     let client = {}
@@ -252,21 +330,23 @@
     })
 
     $('#form button[name=login]').click(async event => {
-        unfocus()
         event.preventDefault()
+        const {provider, seed, password} = inputs()
+        if ($("#form").validate().valid()) {
+            unfocus()
+            $('#form button[name=login]').blur()
 
-        await wait(async () => {
-            const {provider, seed, password} = inputs()
-
-            tic.mamClient.setProvider(provider)
-            const iota = tic.mamClient.getIota()
-            client = await tic.init.fromMasterSeed({
-                masterSeed: seed, 
-                password, 
-                iota
+            await wait(async () => {
+                tic.mamClient.setProvider(provider)
+                const iota = tic.mamClient.getIota()
+                client = await tic.init.fromMasterSeed({
+                    masterSeed: seed, 
+                    password, 
+                    iota
+                })
+                await showContent()
             })
-            await showContent()
-        })
+        }
     })
 
     async function showProfile(profileRoot, iota) {
