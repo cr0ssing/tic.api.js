@@ -11,14 +11,11 @@ Then copy the file tic.web.js from the dist directory to the examples/web direct
 ## Running
 You can run the example by executing:
 ```sh
-$ npm run serve
+$ npm run web-example
 ```
-or by: 
-```sh
-$ node .\examples\web\serve.js
-```
+or by just opening the index.html in a browser.
 
-If you don't want to use node/npm you can copy the example's contents to any http web server.
+It's possible to serve this example with any http web server.
 
 * * *
 

@@ -1,6 +1,6 @@
 {
   "name": "tic.api.js",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Web of trust for contacts in the IOTA network",
   "keywords": [
     "iota",
@@ -35,7 +35,7 @@
     "cli-debug": "cross-env DEBUG=mam,tic node lib/ticCli.js",
     "cli": "node lib/ticCli.js",
     "web": "browserify lib/ticApi.js --standalone tic > dist/tic.web.js",
-    "serve": "serve examples/web"
+    "web-example": "opn examples/web/index.html"
   },
   "dependencies": {
     "extend": "^3.0.1",
@@ -45,12 +45,11 @@
     "browserify": "^16.2.2",
     "chai": "^4.1.2",
     "cross-env": "^5.2.0",
-    "express": "^4.16.3",
     "jsdoc": "^3.5.5",
     "jsdoc-to-markdown": "^4.0.1",
     "mocha": "^5.2.0",
+    "opn-cli": "^3.1.0",
     "pkg": "4.3.1",
-    "rewire": "^4.0.1",
-    "serve": "^9.4.0"
+    "rewire": "^4.0.1"
   }
 }
