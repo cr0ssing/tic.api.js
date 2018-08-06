@@ -1,4 +1,10 @@
-# Instructions
+# TIC Web Example
+With this example you can use TIC in the browser. You can read and write account information and get ratings for accounts.
+
+The example is pure html/css/javascript and all requests are performed on the client side, so there's no server or nodejs needed.
+
+[__Try out__](https://cdn.rawgit.com/cr0ssing/tic.api.js/master/examples/web/)
+
 ## Preparation
 You can build the browserified version of the TIC api by running:
 ```sh
