@@ -1,6 +1,6 @@
 {
   "name": "tic.api.js",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Web of trust for contacts in the IOTA network",
   "keywords": [
     "iota",

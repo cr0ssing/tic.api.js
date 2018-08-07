@@ -6,7 +6,7 @@ distrust the information of someone else. The ones you trust are your 'contacts'
 by which you can validate the information of someone by accumulating the trust ratings of your contacts and their contacts 
 and so on. This makes it possible to derive a trust rating for someone who is not your direct contact.
 
-[__Try out the web example__](https://cdn.rawgit.com/cr0ssing/tic.api.js/9c2372c/examples/web/)
+[__Try out the web example__](https://cdn.rawgit.com/cr0ssing/tic.api.js/b642739/examples/web/)
 
 # Usage
 ## Installation
