@@ -32,6 +32,7 @@
             .master-root {
                 margin-bottom: 1rem;
                 align-items: center;
+                justify-content: center;
             }
 
             .root {
@@ -40,7 +41,22 @@
 
             .tabs {
                 display: flex;
+                justify-content: space-between;
                 width: 100%;
+            }
+
+            .grow {
+                flex-grow: 2;
+            }
+
+            .profile-col {
+                flex-basis: 38%;
+                flex-grow: 0;
+            }
+
+            .contacts-col {
+                flex-basis: 40%;
+                flex-grow: 2;
             }
 
             #content {
@@ -69,6 +85,15 @@
             }
 
             .contacts-buttons {
+                margin-bottom: 1rem;
+            }
+
+            #info {
+                display: none;
+                flex-direction: column;
+            }
+
+            #contacts-contacts {
                 margin-bottom: 1rem;
             }
 
@@ -129,22 +154,22 @@
             </div>
 
             <form id="form">
-                <div class="form-group row">
+                <div class="form-row grow row">
                     <label for="provider" class="col-sm-2 col-form-label">Provider URL</label>
-                    <div class="col-sm-9">
+                    <div class="form-group grow">
                         <input type="text" class="form-control" name="provider" id="provider" placeholder="URL to IOTA fullnode"
                         data-toggle="tooltip" data-placement="bottom" title="The URL of the IOTA full node with POW to use">
                     </div>
                 </div>
-                <div class="form-group row">
+                <div class="form-row grow row">
                     <label for="seed" class="col-sm-2 col-form-label">Seed</label> 
-                    <div class="col-sm-9">
+                    <div class="form-group grow">
                         <input type="text" class="form-control" name="seed" id="seed" placeholder="Your account seed">
                     </div>
                 </div>
-                <div class="form-group row">
+                <div class="form-row grow row">
                     <label for="password" class="col-sm-2 col-form-label">Password</label> 
-                    <div class="col-sm-9">
+                    <div class="form-group grow">
                         <input type="password" class="form-control" name="password" id="password" placeholder="Your account password">
                     </div>
                 </div>
@@ -161,7 +186,7 @@
                     data-toggle="tooltip" data-placement="bottom" title="Save the root of the master channel to clipboard"><i class="fas fa-save"></i></button>
                 </div>
                 <div class="row tabs">
-                    <div class="col content-col">
+                    <div class="col content-col profile-col">
                         <div class="row col-head">
                             <h3 class="col-title">Profile</h3>
                             <div>
@@ -177,8 +202,18 @@
                         </div>
                         <div id="profile-root" class="row channel-root"></div>
                         <pre id="profile-json" class="row"></pre>
+                        <form id="info-form" class="row">
+                            <div class="form-row grow">
+                                <div class="form-group grow">
+                                    <input type="text" class="form-control" name="masterroot" id="master-root-input" placeholder="Master root of a TIC account to get information from">
+                                </div>
+                                <div class="form-group col-md">
+                                    <button id="getInfo" type="button" class="btn">Get info</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    <div class="col content-col">
+                    <div class="col content-col contacts-col">
                         <div class="row col-head">
                             <h3 class="col-title">Contacts</h3>
                             <div>
@@ -195,10 +230,34 @@
                         <div id="contacts-root" class="row channel-root"></div>
                         <pre id="contacts" class="row list-group"></pre>
                         <div class="row contacts-buttons">
-                            <button id="rating" type="button" class="btn content-col">Get Rating</button>
-                            <button id="getContactProfile" type="button" class="btn">Get Profile Info</button>
+                            <button id="getContactProfile" type="button" class="btn">Get Contact Info</button>
                         </div>
-                        <pre id="contacts-json" class="row"></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="info">
+                <nav class="row" aria-label="breadcrumb">
+                    <ol class="breadcrumb" id="contacts-breadcrumb">
+                        
+                    </ol>
+                </nav>
+                <div class="row master-root">
+                    <div id="contact-master-root" class="root"></div>
+                    <button id="copyContactMasterRoot" class="btn btn-sm"
+                    data-toggle="tooltip" data-placement="bottom" title="Save the root of the master channel to clipboard"><i class="fas fa-save"></i></button>
+                </div>
+                <div id ="contacts-tabs" class="tabs">
+                    <div class="col content-col profile-col">
+                        <pre id="contacts-profile" class="row"></pre>
+                        <div class="row contacts-buttons">
+                            <button id="rating" type="button" class="btn content-col">Get Rating</button>
+                        </div>
+                    </div>
+                    <div class="col content-col contacts-col">
+                        <pre id="contacts-contacts" class="row list-group"></pre>
+                        <div class="row contacts-buttons">
+                            <button id="getContactContact" type="button" class="btn">Get Contact Info</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -250,6 +309,26 @@
         })
 
         $("#form").validate().form()
+
+        $("#info-form").validate({
+            rules: {
+                masterroot: {
+                    required: true,
+                    trytes: true
+                }
+            },
+            messages: {
+                masterroot: {
+                    trytes: "The master root has to be in trytes format"
+                }
+            },
+            highlight: function(element) {
+                $(element).removeClass('is-valid').addClass('is-invalid')
+            },
+            unhighlight: function(element) {
+                $(element).addClass('is-valid').removeClass('is-invalid')
+            }
+        })
     })
 
     $(`#form input[name=seed]`).blur(event => {
@@ -275,6 +354,14 @@
         }
         $("#overlay").hide()
     }
+    
+    let client = {}
+
+    const unfocus = () => {
+        ["provider", "seed", "password"].forEach(e => $(`#form input[name=${e}]`).blur())
+    }
+
+    let selected = ""
 
     $('#form button[name=create]').click(async event => {
         event.preventDefault()
@@ -298,37 +385,6 @@
         }
     })
 
-    let client = {}
-
-    const unfocus = () => {
-        ["provider", "seed", "password"].forEach(e => $(`#form input[name=${e}]`).blur())
-    }
-
-    let selected = ""
-
-    $("#rating").click(async event => {
-        if (selected.length > 0) {
-            let rating = {}
-            await wait(async () => {
-                const result = await tic.rating.fromMasterChannelRoot(client.masterRoot, selected, client.masterClient.iota)
-                rating = result.rating.flat
-            })
-            alert(`Trust: ${rating.trust}\nDistrust: ${rating.distrust}\nUnknown: ${rating.unknown}`)
-        }
-    })
-
-    $("#getContactProfile").click(async event => {
-        if (selected.length > 0) {
-            await wait(async () => {
-                const channels = await tic.getChannelRoots(selected)
-                if (channels.profile) {
-                    const profile = await tic.profile.get(channels.profile, client.masterClient.iota)
-                    $('#contacts-json').jsonViewer(profile)
-                }
-            })
-        }
-    })
-
     $('#form button[name=login]').click(async event => {
         event.preventDefault()
         const {provider, seed, password} = inputs()
@@ -348,6 +404,15 @@
             })
         }
     })
+    
+    async function showContent() {
+        $('#content').css("display", "flex")
+        const {profile: {channelRoot: profileRoot}, contacts: {channelRoot: contactsRoot}, masterClient: {iota}} = client
+        $("#master-root").html("Master Root: " + client.masterRoot)
+        $("#copyMasterRoot").attr("data-clipboard-text", client.masterRoot)
+        await showProfile(profileRoot, iota)
+        await showContacts(contactsRoot, iota) 
+    }
 
     async function showProfile(profileRoot, iota) {
         const profile = await tic.profile.get(profileRoot, iota)
@@ -357,12 +422,18 @@
     }
 
     async function showContacts(contactsRoot, iota) {
-        const contacts = await tic.contacts.get(contactsRoot, iota)
-        const name = c => (Object.keys(c)[0])
+        const contacts = await getContacts(client.masterRoot, contactsRoot)
 
         $("#contacts-root").html(`<small>${contactsRoot}</small>`)
         $("#copyContacts").attr("data-clipboard-text", contactsRoot)
-        $("#contacts").empty()
+        populateContacts("#contacts", contacts, c => {
+            selected = c
+        })
+    }
+
+    function populateContacts(rootElement, contacts, callback, prefix = "c") {
+        const name = c => (Object.keys(c)[0])
+        $(rootElement).empty()
         contacts.sort((a, b) => {
             if (name(a) > name(b)) {
                 return 1
@@ -375,24 +446,124 @@
             const contact = name(c)
             const rating = c[contact]
             const clazz = rating == 'trust' ? 'list-group-item-success' : 'list-group-item-danger'
-            $("#contacts").append(`<button id="c-${contact}" type="button" class="list-group-item 
+            $(rootElement).append(`<button id="${prefix}-${contact}" type="button" class="list-group-item 
             list-group-item-action ${clazz}">${contact}</li>`)
-            $(`#c-${contact}`).click(async event => {
-                selected = contact
-                $("#contacts").children().removeClass("active")
-                $(`#c-${contact}`).addClass("active")
+            $(`#${prefix}-${contact}`).click(async event => {
+                callback(contact)
+                $(rootElement).children().removeClass("active")
+                $(`${rootElement} > #${prefix}-${contact}`).addClass("active")
             })
         })
     }
 
-    async function showContent() {
-        $('#content').css("display", "flex")
-        const {profile: {channelRoot: profileRoot}, contacts: {channelRoot: contactsRoot}, masterClient: {iota}} = client
-        $("#master-root").html("Master Root: " + client.masterRoot)
-        $("#copyMasterRoot").attr("data-clipboard-text", client.masterRoot)
-        await showProfile(profileRoot, iota)
-        await showContacts(contactsRoot, iota) 
+    $("#rating").click(async event => {
+        if (loaded.length > 0) {
+            let rating = {}
+            await wait(async () => {
+                const result = await tic.rating.fromMasterChannelRoot(client.masterRoot, loaded, client.masterClient.iota)
+                rating = result.rating.flat
+            })
+            alert(`Trust: ${rating.trust}\nDistrust: ${rating.distrust}\nUnknown: ${rating.unknown}`)
+        }
+    })
+
+    let infoSelected = ""
+
+    function buildNewBreadcrumb(masterRoot, neighbors, level) {
+        $(`#contacts-breadcrumb > div:not(:lt(${level}))`).remove()
+        const id = `b-${level}-${masterRoot}`
+        $("#contacts-breadcrumb").append(`
+        <div class="btn-group breadcrumb-item active">
+            <button id="${id}" class="btn btn-secondary btn-sm" type="button">
+                ${masterRoot.substring(0, 5)}...
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div id="b-${level}" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            </div>
+        </div>`)
+        $(`#${id}`).click(async event => {
+            event.preventDefault()
+                
+            await wait(async () => {
+                await populateInfo(masterRoot, neighbors, level)
+            })
+        })
+        neighbors.filter(c => c != masterRoot).forEach(name => {
+            console.log(name)
+            const id = `b-neighbor-${level}-${name}`
+            $(`#b-${level}`).append(`<a id="${id}" class="dropdown-item">${name}</a>`)
+            $(`#${id}`).click(async event => {
+                event.preventDefault()
+                
+                await wait(async () => {
+                    await populateInfo(name, neighbors, level)
+                })
+            })
+        })
     }
+
+    const contacts = {}
+
+    async function getContacts(masterRoot, contactsRoot) {
+        const result = await tic.contacts.get(contactsRoot, client.masterClient.iota)
+        contacts[masterRoot] = result.map(c => Object.keys(c)[0])
+        return result
+    }
+
+    async function populateInfo(masterRoot, neighbors, level = 0) {
+        const channels = await tic.getChannelRoots(masterRoot)
+        $("#info").css("display", "flex")
+        
+        if (channels.profile) {
+            const profile = await tic.profile.get(channels.profile, client.masterClient.iota)
+            $('#contacts-profile').jsonViewer(profile)
+        }
+        if (channels.contacts) {
+            const contacts = await getContacts(masterRoot, channels.contacts)
+            populateContacts("#contacts-contacts", contacts, c => {
+                infoSelected = c
+            }, "c2")
+            loaded = masterRoot
+            $("#contact-master-root").html("Master Root: " + masterRoot)
+            $("#copyContactMasterRoot").attr("data-clipboard-text", masterRoot)
+            buildNewBreadcrumb(masterRoot, neighbors, level)
+        }
+    }
+
+    $("#getContactProfile").click(async event => {
+        if (selected.length > 0) {
+            await wait(async () => {
+                // first level
+                await populateInfo(selected, contacts[client.masterRoot])
+            })
+        }
+    })
+
+    $("#getInfo").click(async event => {
+        event.preventDefault()
+        if ($("#info-form").validate().valid()) {
+            await wait(async () => {
+                // first level
+                await populateInfo($("#info-form input[name=masterroot]").val(), [])
+            })
+        }
+    })
+
+    let loaded = ""
+
+    $("#getContactContact").click(async event => {
+        event.preventDefault()
+        if (infoSelected.length > 0) {
+            await wait(async () => {
+                // add new level
+                const level = $(`#contacts-breadcrumb > div`).length
+                $(`#contacts-breadcrumb > div:last-child`).removeClass("active")
+                await populateInfo(infoSelected, contacts[loaded], level)
+            })
+        }
+    })
 
     $('#updateProfile').click(async event => {
         await wait(async () => {
